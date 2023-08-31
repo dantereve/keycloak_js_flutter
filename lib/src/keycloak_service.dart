@@ -87,7 +87,7 @@ class KeycloakService {
   }
 
   Future<String> getToken([bool forceLogin = false]) async {
-    await this.updateToken(10);
+    await this.updateToken(refreshToken: this.refreshToken, minValidity: 10);
     return this._keycloak.token;
   }
 
@@ -118,7 +118,7 @@ class KeycloakService {
       if (!this._keycloak.authenticated) {
         return false;
       }
-      await this.updateToken(20);
+      await this.updateToken(refreshToken: this.refreshToken, minValidity: 10);
       return true;
     } catch (error) {
       return false;
@@ -134,7 +134,7 @@ class KeycloakService {
   /// Seconds left. ([minValidity] is optional, if not specified 5 is used)
   /// @returns
   /// Promise with a boolean indicating if the token was succesfully updated.
-  Future<bool> updateToken([num minValidity = 5]) async {
+  Future<bool> updateToken({String? refreshToken, num minValidity = 5}) async {
     // TODO: this is a workaround until the silent refresh (issue #43)
     // is not implemented, avoiding the redirect loop.
     if (this._silentRefresh) {
@@ -147,7 +147,8 @@ class KeycloakService {
       return true;
     }
 
-    return promiseToFuture<bool>(this._keycloak.updateToken(minValidity));
+    return promiseToFuture<bool>(
+        this._keycloak.updateToken(refreshToken, minValidity));
   }
 
   ///

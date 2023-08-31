@@ -688,7 +688,8 @@ abstract class Keycloak {
   /// }).catch(function() {
   /// alert('Failed to refresh the token, or the session has expired');
   /// });
-  external KeycloakPromise<bool, bool> updateToken(num minValidity);
+  external KeycloakPromise<bool, bool> updateToken(
+      String? refreshToken, num minValidity);
 
   /// Clears authentication state, including tokens. This can be useful if
   /// the application has detected the session was expired, for example if
